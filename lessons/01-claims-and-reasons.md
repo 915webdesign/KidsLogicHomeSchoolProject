@@ -28,6 +28,10 @@ Explorer: draw or point to options; complete “I choose __ because __.” Build
 
 Ask each learner: “What do you choose, why, and what question would help you decide?” Record privately, including any changed answer. Celebrate careful thinking.
 
+## Optional browser games
+
+Use [the Lesson 1 games](../games/README.md) to practice the same ideas: Statement Sorter, Reason Detective, and Dinner Countdown. Keep the adult-led cup warm-up and ask the learner to explain their thinking before checking an answer. The games offer Explorer and Builder prompts.
+
 ## Next time
 
 Ask family members to share one harmless everyday claim and one reason. Avoid judging a person's worth from their argument.

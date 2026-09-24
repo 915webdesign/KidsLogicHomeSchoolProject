@@ -10,7 +10,11 @@ A home learning project for children and a parent or teacher. Practice clear thi
 4. Let each learner choose a project using [the project template](projects/PROJECT_TEMPLATE.md).
 5. Use [the AI tutor guide](agents/README.md) to start a coach, questioner, or project guide in separate chats. An adult reviews all AI output and GitHub changes.
 
-No account, public post, code, or purchase is required for a child to participate. This public repository contains teaching materials only. Keep names, ages, photos, answers, locations, and personal stories out of issues and commits.
+No account, public post, code, or purchase is required for a child to participate. This public repository contains teaching materials and browser games. Keep names, ages, photos, answers, locations, and personal stories out of issues and commits.
+
+## Play the lesson games
+
+[Open the games guide](games/README.md) for three playable Lesson 1 activities: Statement Sorter, Reason Detective, and Dinner Countdown. Download the repository ZIP, unzip it, and open `games/lesson-01/index.html` in your browser. No installation or account is needed.
 
 ## Learning goal
 

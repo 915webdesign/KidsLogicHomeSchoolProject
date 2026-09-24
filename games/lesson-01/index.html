@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Logic Lab · Lesson 1 · LogicKids</title>
+  <link rel="stylesheet" href="style.css">
+  <script src="content.js" defer></script>
+  <script src="app.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#activity">Skip to game</a>
+  <header class="topbar"><a href="index.html" class="brand"><span class="brand-mark" aria-hidden="true">L<span>?</span></span> LogicKids</a><span class="tag">LESSON 01 · CLAIMS & REASONS</span></header>
+  <main>
+    <section class="hero" aria-labelledby="title">
+      <div><p class="eyebrow">A LITTLE CURIOSITY. A LOT OF POSSIBILITIES.</p><h1 id="title">Welcome to the<br><span>Logic Lab.</span></h1><p class="intro">Make a claim. Find a reason. Ask a question.<br>Every good idea starts with a little thinking.</p></div>
+      <div class="lab-art" aria-hidden="true"><div class="orbit"></div><div class="tile tile-claim">“ ”<small>I think...</small></div><div class="tile tile-reason">∴<small>because...</small></div><div class="tile tile-question">?<small>what if?</small></div><span class="spark">✦</span></div>
+    </section>
+    <section class="toolbar" aria-label="Game settings"><div><strong>Your thinking tools</strong><span>No timer. Take turns, talk it through, try again.</span></div><label for="level">Challenge <select id="level"><option value="explorer">Explorer · say it</option><option value="builder">Builder · go deeper</option></select></label></section>
+    <div class="workspace">
+      <nav class="missions" aria-label="Choose a game"><p class="eyebrow">YOUR MISSIONS</p>
+        <button data-game="sort" aria-pressed="true"><span class="mission-number">01</span><span><strong>Statement Sorter</strong><small>What job does it do?</small></span><span class="done" aria-label="Completed" hidden>✓</span></button>
+        <button data-game="match" aria-pressed="false"><span class="mission-number">02</span><span><strong>Reason Detective</strong><small>Find the supporting clue.</small></span><span class="done" aria-label="Completed" hidden>✓</span></button>
+        <button data-game="decision" aria-pressed="false"><span class="mission-number">03</span><span><strong>Dinner Countdown</strong><small>Choose. Then think again.</small></span><span class="done" aria-label="Completed" hidden>✓</span></button>
+        <div class="tip"><span aria-hidden="true">✦</span><strong>Changing your mind is allowed.</strong><p>A new reason can lead to a new idea.</p></div>
+      </nav>
+      <section id="activity" class="activity" aria-labelledby="game-title" tabindex="-1"></section>
+    </div>
+    <details class="parent"><summary>For grown-ups: how to play together</summary><p>Use these games after the cup warm-up in Lesson 1. Let the learner answer first. Read aloud when helpful; take turns or replay for another learner. Explorer asks for one spoken or written reason. Builder adds an alternative or a checking question. A reason can also be a claim: Statement Sorter accepts either for the two supporting statements, then explains their role.</p><p>Dinner Countdown has no single correct choice. Ask whether the reason fits the chosen option. Completion marks show activities explored, not mastery. Everything stays in this page's memory and clears on reload. No accounts, tracking, network requests, or saved answers.</p><button id="reset" class="secondary">Reset all games for the next learner</button></details>
+    <footer>THINK CAREFULLY. ASK KINDLY. <span>LogicKids / Lesson 1</span></footer>
+  </main>
+  <noscript><p>Please enable JavaScript to play. You can also use the paper activities in the lesson.</p></noscript>
+</body>
+</html>

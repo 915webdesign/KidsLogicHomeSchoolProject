@@ -1,0 +1,355 @@
+<title>Claim Sort</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Patrick+Hand&display=swap">
+<style>
+  :root {
+    --desk: #E7ECEF;
+    --paper: #FFFFFF;
+    --rule: #C4DAEC;
+    --margin: #E58A8A;
+    --ink: #1E2833;
+    --muted: #5A6875;
+    --line: #CBD4DB;
+    --claim: #2E66C9;
+    --reason: #17875A;
+    --question: #B36A00;
+    --soft: #F3F6F8;
+    --focus: #7A4FD6;
+    color-scheme: light;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --desk: #141A20; --paper: #1F2730; --rule: #2B3E52; --margin: #8A4A4A;
+      --ink: #E8EDF1; --muted: #9DAAB6; --line: #34414D;
+      --claim: #7FA8F0; --reason: #5CC99A; --question: #E6A64A;
+      --soft: #19212A; --focus: #B79BF2;
+      color-scheme: dark;
+    }
+  }
+  :root[data-theme="dark"] {
+    --desk: #141A20; --paper: #1F2730; --rule: #2B3E52; --margin: #8A4A4A;
+    --ink: #E8EDF1; --muted: #9DAAB6; --line: #34414D;
+    --claim: #7FA8F0; --reason: #5CC99A; --question: #E6A64A;
+    --soft: #19212A; --focus: #B79BF2;
+    color-scheme: dark;
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--desk);
+    color: var(--ink);
+    font: 17px/1.5 "Atkinson Hyperlegible", system-ui, sans-serif;
+  }
+  .wrap { max-width: 720px; margin: 0 auto; padding: 24px 16px 48px; display: grid; gap: 20px; }
+  header { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 8px 16px; }
+  h1 { font: 400 2.4rem/1.1 "Patrick Hand", "Comic Sans MS", cursive; margin: 0; text-wrap: balance; }
+  h2 { font-size: 1.1rem; margin: 0; text-wrap: balance; }
+  p { margin: 0; }
+  .step { font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+  .mode { display: inline-flex; border: 1px solid var(--line); border-radius: 999px; overflow: hidden; }
+  .mode button { border: 0; border-radius: 0; background: transparent; padding: 6px 14px; font-size: .9rem; }
+  .mode button[aria-pressed="true"] { background: var(--ink); color: var(--desk); }
+
+  /* index card */
+  .card {
+    position: relative;
+    background:
+      linear-gradient(to right, transparent 46px, var(--margin) 46px, var(--margin) 48px, transparent 48px),
+      repeating-linear-gradient(to bottom, var(--paper) 0 35px, var(--rule) 35px 36px);
+    background-color: var(--paper);
+    border-radius: 4px;
+    box-shadow: 0 1px 0 var(--line), 0 8px 24px rgba(20, 30, 40, .12);
+    padding: 36px 20px 28px 64px;
+    min-height: 180px;
+    display: flex; align-items: center;
+    transform: rotate(-.6deg);
+  }
+  .card .words { font: 400 1.9rem/36px "Patrick Hand", "Comic Sans MS", cursive; }
+  .card .tag {
+    position: absolute; top: 10px; right: 14px;
+    font-size: .75rem; letter-spacing: .08em; text-transform: uppercase; font-weight: 700;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .card.enter { animation: deal .35s ease-out; }
+    @keyframes deal { from { transform: translateY(12px) rotate(2deg); opacity: .4; } to { transform: rotate(-.6deg); opacity: 1; } }
+  }
+
+  .panel { background: var(--paper); border: 1px solid var(--line); border-radius: 8px; padding: 18px; display: grid; gap: 14px; }
+  .choices { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 480px) { .choices { grid-template-columns: 1fr; } }
+
+  button {
+    font: inherit; color: inherit; cursor: pointer;
+    border: 2px solid var(--line); background: var(--paper);
+    border-radius: 8px; padding: 12px 14px;
+  }
+  button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+  button:disabled { cursor: default; opacity: .55; }
+  .pick { display: grid; gap: 2px; text-align: left; }
+  .pick b { font-size: 1.05rem; }
+  .pick span { font-size: .85rem; color: var(--muted); }
+  .pick.claim b { color: var(--claim); }
+  .pick.reason b { color: var(--reason); }
+  .pick.question b { color: var(--question); }
+  .pick[aria-pressed="true"].claim { border-color: var(--claim); }
+  .pick[aria-pressed="true"].reason { border-color: var(--reason); }
+  .pick[aria-pressed="true"].question { border-color: var(--question); }
+  .primary { background: var(--ink); color: var(--desk); border-color: var(--ink); font-weight: 700; }
+  .row { display: flex; flex-wrap: wrap; gap: 10px; }
+
+  .say { border-left: 4px solid var(--focus); padding: 4px 0 4px 12px; }
+  .feedback { background: var(--soft); border-radius: 8px; padding: 14px; display: grid; gap: 6px; }
+  .note { font-size: .9rem; color: var(--muted); }
+
+  .tray { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
+  @media (max-width: 480px) { .tray { grid-template-columns: 1fr; } }
+  .bin { border: 2px dashed var(--line); border-radius: 8px; padding: 10px; display: grid; gap: 6px; align-content: start; min-height: 64px; }
+  .bin h3 { margin: 0; font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; }
+  .bin.claim h3 { color: var(--claim); } .bin.reason h3 { color: var(--reason); } .bin.question h3 { color: var(--question); }
+  .mini { font: 400 1.05rem/1.25 "Patrick Hand", "Comic Sans MS", cursive; background: var(--soft); border-radius: 4px; padding: 4px 8px; }
+
+  .pairs { display: grid; gap: 10px; }
+  .pair { display: grid; gap: 8px; }
+  .pair .mini { font-size: 1.25rem; }
+</style>
+
+<div class="wrap">
+  <header>
+    <div>
+      <p class="step" id="step">Round 1 · Card 1 of 6</p>
+      <h1>Claim Sort</h1>
+    </div>
+    <div class="mode" role="group" aria-label="Level">
+      <button type="button" id="mode-explorer" aria-pressed="true">Explorer</button>
+      <button type="button" id="mode-builder" aria-pressed="false">Builder</button>
+    </div>
+  </header>
+
+  <main id="stage" aria-live="polite"></main>
+
+  <section class="panel" aria-label="Sorted so far">
+    <h2>Your sorting tray</h2>
+    <div class="tray">
+      <div class="bin claim"><h3>Claim</h3><div id="bin-claim"></div></div>
+      <div class="bin reason"><h3>Reason</h3><div id="bin-reason"></div></div>
+      <div class="bin question"><h3>Question</h3><div id="bin-question"></div></div>
+    </div>
+  </section>
+
+  <p class="note">For a child and an adult together, from <a href="../lessons/01-claims-and-reasons.md">Lesson 1: Claims and reasons</a>. Say your thinking out loud. The game does not save or send anything.</p>
+</div>
+
+<script>
+(() => {
+  const KINDS = {
+    claim:    { label: "Claim",    hint: "Something we say might be true" },
+    reason:   { label: "Reason",   hint: "Tells why we think something" },
+    question: { label: "Question", hint: "Asks for information" },
+  };
+
+  // Answer key matches lessons/01-claims-and-reasons.md
+  const CARDS = [
+    { text: "We should play outside.", kind: "claim",
+      why: "It says what we should do. Someone could agree or disagree, so it needs a reason.",
+      retry: "Does this sentence ask something, or does it say something someone could agree or disagree with?" },
+    { text: "The weather is dry.", kind: "reason",
+      why: "It can support “We should play outside.” It is also a claim on its own: we could check by looking out the window.",
+      also: "claim",
+      retry: "Could this sentence help explain why we might do something?" },
+    { text: "What time is it?", kind: "question",
+      why: "It asks for information. It does not say anything is true yet.",
+      retry: "Look at the end of the sentence. What is it asking us to do?" },
+    { text: "This puzzle has a missing piece.", kind: "claim",
+      why: "It says something might be true. We would want a reason before we believe it.",
+      retry: "Is this sentence telling us something might be true, or giving the why?" },
+    { text: "I counted only 19 pieces, but the box says 20.", kind: "reason",
+      why: "It is evidence for “This puzzle has a missing piece.” It is also a claim we could check by counting again.",
+      also: "claim",
+      retry: "Could this sentence be the why behind another card?" },
+    { text: "Which game can we finish before dinner?", kind: "question",
+      why: "It asks something we need to find out before we decide.",
+      retry: "Is this sentence telling us something, or asking us something?" },
+  ];
+
+  const stage = document.getElementById("stage");
+  const stepEl = document.getElementById("step");
+  let mode = "explorer";
+  let state = { round: 1, i: 0, picked: null, tries: 0, checked: false, sorted: [] };
+
+  const el = (tag, attrs = {}, ...kids) => {
+    const n = document.createElement(tag);
+    for (const [k, v] of Object.entries(attrs)) {
+      if (v == null) continue;
+      if (k === "class") n.className = v;
+      else if (k.startsWith("on")) n.addEventListener(k.slice(2), v);
+      else n.setAttribute(k, v);
+    }
+    for (const k of kids.flat()) if (k != null) n.append(k);
+    return n;
+  };
+
+  function setMode(m) {
+    mode = m;
+    document.getElementById("mode-explorer").setAttribute("aria-pressed", m === "explorer");
+    document.getElementById("mode-builder").setAttribute("aria-pressed", m === "builder");
+    render(false);
+  }
+  document.getElementById("mode-explorer").addEventListener("click", () => setMode("explorer"));
+  document.getElementById("mode-builder").addEventListener("click", () => setMode("builder"));
+
+  function renderTray() {
+    for (const k of Object.keys(KINDS)) document.getElementById("bin-" + k).replaceChildren();
+    for (const c of state.sorted) {
+      document.getElementById("bin-" + c.kind).append(el("div", { class: "mini" }, c.text));
+    }
+  }
+
+  function card(text, tag, animate) {
+    return el("div", { class: "card" + (animate ? " enter" : "") },
+      tag ? el("span", { class: "tag", style: `color: var(--${tag})` }, KINDS[tag].label) : null,
+      el("p", { class: "words" }, text));
+  }
+
+  function render(animate = true) {
+    renderTray();
+    if (state.round === 1) return renderSort(animate);
+    if (state.round === 2) return renderMatch();
+    return renderEnd();
+  }
+
+  // Round 1: sort each card
+  function renderSort(animate) {
+    const c = CARDS[state.i];
+    stepEl.textContent = `Round 1 · Card ${state.i + 1} of ${CARDS.length}`;
+
+    const picks = el("div", { class: "choices", role: "group", "aria-label": "Sort this card" },
+      Object.entries(KINDS).map(([k, v]) =>
+        el("button", { type: "button", class: "pick " + k, "aria-pressed": state.picked === k,
+          disabled: state.checked ? "" : null,
+          onclick: () => { state.picked = k; render(false); } },
+          el("b", {}, v.label), el("span", {}, v.hint))));
+
+    const panel = el("section", { class: "panel" },
+      el("h2", {}, "Is this card a claim, a reason, or a question?"), picks);
+
+    if (state.picked && !state.checked) {
+      panel.append(
+        el("p", { class: "say" }, mode === "explorer"
+          ? `Say it out loud: “I think it is a ${KINDS[state.picked].label.toLowerCase()} because …”`
+          : `Say it out loud: “It is a ${KINDS[state.picked].label.toLowerCase()} because …” Then name one way someone could disagree.`),
+        el("div", { class: "row" },
+          el("button", { type: "button", class: "primary", onclick: check }, "I said my reason. Check it.")));
+    }
+
+    if (state.checked) {
+      const right = state.picked === c.kind || state.picked === c.also;
+      const fb = el("div", { class: "feedback" });
+      if (right) {
+        fb.append(el("p", {}, el("b", {}, state.picked === c.kind ? "Good thinking." : "That works too.")),
+          el("p", {}, c.why));
+        if (mode === "builder" && c.kind === "reason")
+          fb.append(el("p", {}, "Builder: Which card does this support? How strong is that support?"));
+        fb.append(el("div", { class: "row" },
+          el("button", { type: "button", class: "primary", onclick: next },
+            state.i + 1 < CARDS.length ? "Next card" : "Go to Round 2")));
+      } else if (state.tries < 2) {
+        fb.append(el("p", {}, el("b", {}, "Look again.")), el("p", {}, c.retry),
+          el("div", { class: "row" },
+            el("button", { type: "button", class: "primary", onclick: () => { state.checked = false; state.picked = null; render(false); } }, "Try again")));
+      } else {
+        fb.append(el("p", {}, el("b", {}, `This one is a ${KINDS[c.kind].label.toLowerCase()}.`)),
+          el("p", {}, c.why),
+          el("p", { class: "note" }, "Grown-up: ask what made the other choice seem right. That thinking is worth hearing."),
+          el("div", { class: "row" },
+            el("button", { type: "button", class: "primary", onclick: next },
+              state.i + 1 < CARDS.length ? "Next card" : "Go to Round 2")));
+      }
+      panel.append(fb);
+    }
+
+    stage.replaceChildren(el("div", { style: "display:grid; gap:20px" }, card(c.text, null, animate), panel));
+  }
+
+  function check() { state.tries++; state.checked = true; render(false); }
+
+  function next() {
+    const c = CARDS[state.i];
+    state.sorted.push({ text: c.text, kind: c.kind });
+    state.i++; state.picked = null; state.tries = 0; state.checked = false;
+    if (state.i >= CARDS.length) { state.round = 2; state.match = {}; state.matchChecked = false; }
+    render(true);
+  }
+
+  // Round 2: match reasons to claims, then judge a weak reason
+  const REASONS = [1, 4];  // indexes into CARDS
+  const CLAIMS = [0, 3];
+  const ANSWER = { 1: 0, 4: 3 };
+
+  function renderMatch() {
+    stepEl.textContent = "Round 2 · Match and judge";
+    const pairs = el("div", { class: "pairs" }, REASONS.map(r =>
+      el("div", { class: "pair" },
+        el("div", { class: "mini" }, CARDS[r].text),
+        el("p", { class: "note" }, "This reason supports:"),
+        el("div", { class: "row" }, CLAIMS.map(ci =>
+          el("button", { type: "button", class: "pick claim", "aria-pressed": state.match[r] === ci,
+            onclick: () => { state.match[r] = ci; state.matchChecked = false; render(false); } },
+            el("b", {}, CARDS[ci].text)))))));
+
+    const panel = el("section", { class: "panel" },
+      el("h2", {}, "Which claim does each reason support?"), pairs);
+
+    const done = REASONS.every(r => state.match[r] != null);
+    if (done && !state.matchChecked) {
+      panel.append(el("p", { class: "say" }, "Before you check, say why each reason fits its claim."),
+        el("div", { class: "row" },
+          el("button", { type: "button", class: "primary", onclick: () => { state.matchChecked = true; render(false); } }, "Check my matches")));
+    }
+    if (state.matchChecked) {
+      const ok = REASONS.every(r => state.match[r] === ANSWER[r]);
+      const fb = el("div", { class: "feedback" });
+      if (ok) {
+        fb.append(el("p", {}, el("b", {}, "Both match.")),
+          el("p", {}, "Dry weather helps us play outside. Counting 19 pieces when the box says 20 is evidence of a missing piece."),
+          el("h2", {}, "Now think: is dry weather a strong reason?"),
+          el("p", { class: "say" }, "Say what you think first. Does dry weather tell us whether we have enough time to play outside?"),
+          el("div", { class: "row" },
+            el("button", { type: "button", class: "primary", onclick: () => { state.round = 3; render(true); } }, "I said my answer")));
+      } else {
+        fb.append(el("p", {}, el("b", {}, "One match needs another look.")),
+          el("p", {}, "Read each reason and ask: “Does this help show that claim is true?”"));
+      }
+      panel.append(fb);
+    }
+    stage.replaceChildren(panel);
+  }
+
+  // End: weak-reason note, decision challenge, exit ticket
+  function renderEnd() {
+    stepEl.textContent = "Round 3 · Your turn to decide";
+    stage.replaceChildren(el("section", { class: "panel" },
+      el("div", { class: "feedback" },
+        el("p", {}, el("b", {}, "One idea to compare with yours:")),
+        el("p", {}, "Dry weather helps with playing outside, but it does not settle whether there is enough time. A reason can be true and still not be enough.")),
+      el("h2", {}, "Decision challenge"),
+      card("We have 20 minutes before dinner. Option A is a 30-minute board game. Option B is a 10-minute drawing game.", null, true),
+      el("p", { class: "say" }, mode === "explorer"
+        ? "Point to an option and finish: “I choose __ because __.”"
+        : "Give two reasons, one objection someone might raise, and your reply."),
+      el("p", {}, "New information: the board game can be saved halfway. Does that change your choice? Changing your mind for a good reason is careful thinking."),
+      el("p", { class: "say" }, "Last question: What do you choose, why, and what question would help you decide?"),
+      el("div", { class: "row" },
+        el("button", { type: "button", onclick: restart }, "Play again"))));
+  }
+
+  function restart() {
+    state = { round: 1, i: 0, picked: null, tries: 0, checked: false, sorted: [] };
+    render(true);
+  }
+
+  render(true);
+})();
+</script>

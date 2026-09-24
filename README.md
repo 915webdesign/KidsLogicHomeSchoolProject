@@ -5,7 +5,7 @@ A home learning project for children and a parent or teacher. Practice clear thi
 ## Start here
 
 1. Read [the parent guide](docs/parent-guide.md).
-2. Run [Lesson 1: Claims and reasons](lessons/01-claims-and-reasons.md).
+2. Run [Lesson 1: Claims and reasons](lessons/01-claims-and-reasons.md). Play its sorting game on paper or open [Claim Sort](games/claim-sort.html) in a browser.
 3. Follow [the 12-week path](docs/curriculum.md) for one 25–40 minute session each week.
 4. Let each learner choose a project using [the project template](projects/PROJECT_TEMPLATE.md).
 5. Use [the AI tutor guide](agents/README.md) to start a coach, questioner, or project guide in separate chats. An adult reviews all AI output and GitHub changes.
